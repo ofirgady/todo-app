@@ -4,20 +4,19 @@ import { DataTable } from "../cmps/data-table/DataTable.jsx";
 import { showErrorMsg, showSuccessMsg } from "../services/event-bus.service.js";
 import { loadTodos,	removeTodoOptimistic,toggleTodo } from "../store/actions/todo.actions.js";
 import { SET_FILTER_BY } from "../store/reducers/todo.reducer.js";
+import { SET_USER } from "../store/reducers/user.reducer.js";
 
 const { useState, useEffect, Fragment } = React;
 const { Link, useSearchParams } = ReactRouterDOM;
 const { useSelector, useDispatch } = ReactRedux;
-
 export function TodoIndex() {
 	const todos = useSelector((storeState) => storeState.todoModule.todos);
-	const isLoading = useSelector(
-		(storeState) => storeState.todoModule.isLoading
-	);
+    const user = useSelector((storeState) => storeState.userModule.loggedInUser)
+	const isLoading = useSelector((storeState) => storeState.todoModule.isLoading);
 	const filterBy = useSelector((storeState) => storeState.todoModule.filterBy);
 
-	const [isDialogOpen, setDialogOpen] = useState(false);
 	const [todoToRemove, setTodoToRemove] = useState(null);
+	const dialogRef = React.useRef(null); // Ref for the <dialog> element
 
 	const dispatch = useDispatch();
 
@@ -33,15 +32,14 @@ export function TodoIndex() {
 
 	function handleOpenDialog(todoId) {
 		setTodoToRemove(todoId);
-		setDialogOpen(true);
+		dialogRef.current.showModal();
 	}
 
 	function handleCloseDialog() {
-		setDialogOpen(false);
+		dialogRef.current.close(); 
 		setTodoToRemove(null);
 	}
 
-// TODO check the satate to remove todo and list todo_id
 	function handleConfirmRemove() {
 		if (todoToRemove) {
 			removeTodoOptimistic(todoToRemove)
@@ -57,6 +55,9 @@ export function TodoIndex() {
 
 	function onToggleTodo(todo) {
 		const todoToSave = { ...todo, isDone: !todo.isDone };
+        if (todoToSave.isDone) {
+            dispatch({type: SET_USER, user: {...user, balance: user.balance + 10}})
+        }
 		toggleTodo(todoToSave)
 			.then((savedTodo) => {
 				showSuccessMsg(
@@ -101,17 +102,15 @@ export function TodoIndex() {
 			) : (
 				<div>Loading..</div>
 			)}
-            {/* check on dialog element */}
-            {/*  <dialog></dialog> */}
-			{isDialogOpen && (
-				<div className='dialog-overlay'>
-					<div className='dialog'>
-						<p>Are you sure you want to delete this todo?</p>
-						<button onClick={handleConfirmRemove}>Yes</button>
-						<button onClick={handleCloseDialog}>No</button>
-					</div>
+
+			{/* Dialog Element */}
+			<dialog ref={dialogRef} className='dialog'>
+				<p>Are you sure you want to delete this todo?</p>
+				<div>
+					<button onClick={handleConfirmRemove}>Yes</button>
+					<button onClick={handleCloseDialog}>No</button>
 				</div>
-			)}
+			</dialog>
 		</section>
 	);
 }

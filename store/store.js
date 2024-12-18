@@ -14,4 +14,4 @@ const rootReducer = combineReducers({
 export const store = createStore(rootReducer, composeEnhancers())
 window.gStore = store
 
-console.log('store.getState():', store.getState())
+console.log('store.getState():', store)
