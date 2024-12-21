@@ -1,3 +1,9 @@
+:root {
+  --user-color: #ffffff; /* Default text color */
+  --user-bg-color: #000000; /* Default background color */
+  --user-font-size: 16px; /* Default font size */
+}
+
 * {
   box-sizing: border-box;
 }
@@ -6,8 +12,9 @@ html {
 }
 
 body {
-  margin: 0;
-  color: var(--gray3);
+  color: var(--user-color);
+  background-color: var(--user-bg-color);
+  font-size: var(--user-font-size);
 }
 
 h1,

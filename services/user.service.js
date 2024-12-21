@@ -8,7 +8,8 @@ export const userService = {
     signup,
     getById,
     query,
-    getEmptyCredentials
+    getEmptyCredentials,
+    updateLoggedInUser
 }
 const STORAGE_KEY_LOGGEDIN = 'user'
 const STORAGE_KEY = 'userDB'
@@ -35,7 +36,7 @@ function signup({ username, password, fullname }) {
     user.createdAt = user.updatedAt = Date.now()
     user.balance = 0
     user.activities = []
-    user.prefs = {color: 'black', bgColor: 'white'}
+    user.prefs = {color: '#000000', bgColor: '#FFFFFF'}
 
     return storageService.post(STORAGE_KEY, user)
         .then(_setLoggedinUser)
@@ -62,6 +63,11 @@ function getEmptyCredentials() {
         username: 'ofir',
         password: '12345',
     }
+}
+
+function updateLoggedInUser(user) {
+    return storageService.put(STORAGE_KEY, user)
+    .then(_setLoggedinUser)
 }
 
 // signup({username: 'muki', password: 'muki1', fullname: 'Muki Ja'})

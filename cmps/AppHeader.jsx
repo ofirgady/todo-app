@@ -1,25 +1,31 @@
-const { useState } = React
-const { Link, NavLink } = ReactRouterDOM
-const { useNavigate } = ReactRouter
-const { useSelector, useDispatch } = ReactRedux
-
 import { userService } from '../services/user.service.js'
 import { UserMsg } from "./UserMsg.jsx"
 import { LoginSignup } from './LoginSignup.jsx'
 import { showErrorMsg, showSuccessMsg } from '../services/event-bus.service.js'
 import { logout } from '../store/actions/user.actions.js'
-import { SET_USER } from '../store/reducers/user.reducer.js'
+import { UPDATE_LAYOUT_PREFS } from "../store/reducers/layout.reducer.js"
+const { useState, useEffect } = React
+const { Link, NavLink, useNavigate } = ReactRouterDOM
+const { useSelector, useDispatch } = ReactRedux;
+
 
 
 export function AppHeader() {
     const navigate = useNavigate()
     const user = useSelector(storeState => storeState.userModule.loggedInUser)
     const dispatch = useDispatch()
+
+    useEffect(() => {
+        if (user) {
+            dispatch({type: UPDATE_LAYOUT_PREFS, prefs: user.prefs})
+        }
+    }, [user])
+
     
     function onLogout() {
+        navigate('/')
         logout()
             .then(() => {
-                navigate('/')
                 showSuccessMsg('logged out successfully')
             })
             .catch((err) => {
