@@ -2,10 +2,10 @@ import { TodoFilter } from "../cmps/TodoFilter.jsx";
 import { TodoList } from "../cmps/TodoList.jsx";
 import { DataTable } from "../cmps/data-table/DataTable.jsx";
 import { showErrorMsg, showSuccessMsg } from "../services/event-bus.service.js";
-import { loadTodos,	removeTodoOptimistic,toggleTodo } from "../store/actions/todo.actions.js";
+import { loadTodos,	removeTodoOptimistic,toggleTodo, saveTodo } from "../store/actions/todo.actions.js";
 import { SET_FILTER_BY } from "../store/reducers/todo.reducer.js";
 import { SET_USER } from "../store/reducers/user.reducer.js";
-
+import { updateUser } from "../store/actions/user.actions.js";
 const { useState, useEffect, Fragment } = React;
 const { Link, useSearchParams } = ReactRouterDOM;
 const { useSelector, useDispatch } = ReactRedux;
@@ -44,8 +44,10 @@ export function TodoIndex() {
 		if (todoToRemove) {
 			removeTodoOptimistic(todoToRemove)
 				.then(() => {
+					updateUser({...user, activities: [...user.activities, {txt: 'Removed a Todo' , at: Date.now()}]});
 					handleCloseDialog();
 					showSuccessMsg(`Todo removed`);
+					console.log(user);
 				})
 				.catch((err) => {
 					showErrorMsg("Cannot remove todo " + todoToRemove);
@@ -56,9 +58,9 @@ export function TodoIndex() {
 	function onToggleTodo(todo) {
 		const todoToSave = { ...todo, isDone: !todo.isDone };
         if (todoToSave.isDone) {
-            dispatch({type: SET_USER, user: {...user, balance: user.balance + 10}})
+            updateUser({...user, balance: user.balance + 10, activities: [...user.activities, {txt: 'Finished a Todo' , at: Date.now()}]})
         }
-		toggleTodo(todoToSave)
+		saveTodo(todoToSave)
 			.then((savedTodo) => {
 				showSuccessMsg(
 					`Todo is ${savedTodo.isDone ? "done" : "back on your list"}`
@@ -76,11 +78,7 @@ export function TodoIndex() {
 				onSetFilterBy={onSetFilter}
 			/>
 			<div>
-				<Link
-					to='/todo/edit'
-					className='btn'>
-					Add Todo
-				</Link>
+				<Link to='/todo/edit' className='btn'> Add Todo </Link>
 			</div>
 			<h2>Todos List</h2>
 			{!isLoading ? (

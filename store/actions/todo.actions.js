@@ -22,7 +22,6 @@ export function loadTodo(todoId) {
     store.dispatch({ type: SET_IS_LOADING, isLoading: true })
     return todoService.get(todoId)
     .then((todo => {
-        console.log(todo);
         store.dispatch({ type: SET_TODO, todo })
     }))
     .catch(err => {
@@ -39,6 +38,7 @@ export function removeTodo(todoId) {
     return todoService.remove(todoId)
         .then(() => {
             store.dispatch({ type: REMOVE_TODO, todoId })
+            store.dispatch({ type: SET_USER, todoId })
         })
         .catch(err => {
             console.log('todo action -> Cannot remove todo', err)

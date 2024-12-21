@@ -1,6 +1,7 @@
 import { showErrorMsg, showSuccessMsg } from "../services/event-bus.service.js"
+import { utilService } from "../services/util.service.js"
 import { updateLayoutPrefs } from "../store/actions/layout.actions.js"
-import { updateUser } from "../store/actions/user.actions.js"
+import { updateUserPrefs } from "../store/actions/user.actions.js"
 
 const { useState, useEffect } = React
 const { useParams, useNavigate, Link } = ReactRouterDOM
@@ -14,22 +15,13 @@ export function UserDetails() {
 	const [userToEdit, setUserToEdit] = useState(user)
 	const dispatch = useDispatch()
 
-	// useEffect(() => {
-	//     if(params.userId) {
-	//     loadActivities(params.userId) // define and create
-	//     .then(() => {
-	//         showSuccessMsg('User loaded successfully')
-	//     })
-	//         .catch(err => {
-	//             showErrorMsg('Cannot load user')
-	//             navigate('/')
-	//         })
-	//     }
-	// }, [])
+	useEffect(() => {
+        console.log(user);
+	}, [])
 
 	function onSaveUser(ev) {
 		ev.preventDefault()
-		updateUser(userToEdit)
+		updateUserPrefs(userToEdit)
 			.then(() => {
 				showSuccessMsg("User preferences saved successfully")
 			})
@@ -37,12 +29,6 @@ export function UserDetails() {
 				showErrorMsg("Cannot save user preferences")
 			})
 	}
-
-	// useEffect(() => {
-    //     if (!params.userId) {
-    //         navigate('/')
-    //     }
-	// }, [])
 
 	function handleChange({ target }) {
 		const field = target.name
@@ -109,6 +95,17 @@ export function UserDetails() {
 
 				<button>Save</button>
 			</form>
+            <h1>User Activity:</h1>
+            <ul>
+                {!user.activities.length && (
+                    <p>no activities to show...</p>
+                ) }
+                {user.activities.map((activity) => (
+                    <li key={activity.at}>
+                        <p>{utilService.timeAgo(activity.at)} | {activity.txt}</p>
+                    </li>
+                ))}
+            </ul>
 		</section>
 	)
 }

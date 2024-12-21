@@ -41,7 +41,7 @@ export function logout() {
         })
 }
 
-export function updateUser(user) {
+export function updateUserPrefs(user) {
     store.dispatch({ type: SET_IS_LOADING, isLoading: true })
     return userService.updateLoggedInUser(user)
     .then((updatedUser) => {
@@ -49,11 +49,26 @@ export function updateUser(user) {
         store.dispatch({ type: UPDATE_LAYOUT_PREFS, prefs: updatedUser.prefs})
     })
     .catch((err) => {
-        console.log('user actions -> Cannot update user', err)
+        console.log('user actions -> Cannot update user preferences', err)
         throw err
     })
     .finally(() => {
         store.dispatch({ type: SET_IS_LOADING, isLoading: false })
     })
+}
+
+export function updateUser(user) {
+    store.dispatch({ type: SET_USER, user: user })
+    return userService.updateLoggedInUser(user)
+    .then((updatedUser) => {
+        store.dispatch({ type: SET_USER, user: updatedUser })
+    })
+    .catch((err) => {
+        console.log('user actions -> Cannot update user', err)
+        throw err
+    })
+    // .finally(() => {
+    //     store.dispatch({ type: SET_IS_LOADING, isLoading: false })
+    // })
 }
 

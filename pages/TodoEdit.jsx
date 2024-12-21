@@ -3,10 +3,11 @@ import { showErrorMsg, showSuccessMsg } from "../services/event-bus.service.js"
 import { loadTodo, saveTodo } from "../store/actions/todo.actions.js"
 import { SET_IS_LOADING } from "../store/reducers/todo.reducer.js"
 import { store } from "../store/store.js"
+import { SET_USER } from "../store/reducers/user.reducer.js"
 
 const { useState, useEffect } = React
 const { useNavigate, useParams } = ReactRouterDOM
-const { useSelector } = ReactRedux
+const { useSelector, useDispatch } = ReactRedux
 
 export function TodoEdit() {
 
@@ -15,6 +16,7 @@ export function TodoEdit() {
     const navigate = useNavigate()
     const params = useParams()
     const isLoading = useSelector(storeState => storeState.todoModule.isLoading)
+    const dispatch = useDispatch()
 
     useEffect(() => {
         if (params.todoId) {
@@ -59,6 +61,7 @@ export function TodoEdit() {
             .then((savedTodo) => {
                 navigate('/todo')
                 showSuccessMsg(`Todo Saved (id: ${savedTodo._id})`)
+			    dispatch({ type: SET_USER, user: {...user, activities: [...user.activities, {txt: params.todoId ? 'Updated a Todo' : 'Added a Todo' , at: Date.now()}]} });
             })
             .catch(err => {
                 showErrorMsg('Cannot save todo')

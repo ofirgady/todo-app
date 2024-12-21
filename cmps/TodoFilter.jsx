@@ -6,7 +6,6 @@ export function TodoFilter({ filterBy, onSetFilterBy }) {
 	useEffect(() => {
 		// Notify parent
 		onSetFilterBy(filterByToEdit);
-		console.log(filterByToEdit);
 	}, [filterByToEdit]);
 
 	function handleChange({ target }) {

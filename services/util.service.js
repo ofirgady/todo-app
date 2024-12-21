@@ -4,7 +4,8 @@ export const utilService = {
     getRandomIntInclusive,
     loadFromStorage,
     saveToStorage,
-    animateCSS
+    animateCSS,
+    timeAgo
 }
 
 function makeId(length = 6) {
@@ -57,4 +58,32 @@ function animateCSS(el, animation='bounce') {
 
         el.addEventListener('animationend', handleAnimationEnd, { once: true })
     })
+}
+
+function timeAgo(msDate) {
+	const now = Date.now()
+	const elapsed = now - msDate
+
+	const seconds = Math.floor(elapsed / 1000)
+	const minutes = Math.floor(elapsed / (1000 * 60))
+	const hours = Math.floor(elapsed / (1000 * 60 * 60))
+	const days = Math.floor(elapsed / (1000 * 60 * 60 * 24))
+
+	if (seconds < 60) {
+		return "a few seconds ago"
+	} else if (minutes < 60) {
+		return `${minutes} minute${minutes === 1 ? "" : "s"} ago`
+	} else if (hours < 24) {
+		return `${hours} hour${hours === 1 ? "" : "s"} ago`
+	} else if (days === 1) {
+		return "a day ago"
+	} else if (days < 7) {
+		return "a few days ago"
+	} else {
+		const date = new Date(msDate)
+		const day = String(date.getDate()).padStart(2, "0")
+		const month = String(date.getMonth() + 1).padStart(2, "0") // Months are 0-based
+		const year = date.getFullYear()
+		return `${day}/${month}/${year}`
+	}
 }
