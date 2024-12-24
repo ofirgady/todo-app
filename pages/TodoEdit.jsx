@@ -69,7 +69,11 @@ export function TodoEdit() {
     }
 
     const { txt, importance, isDone } = todoToEdit
-    if (isLoading) return <div>loading...</div>
+    if (isLoading) return (
+        <div className='loading-container'>
+            <div className='loading'></div>
+        </div>
+    );
     return (
         <section className="todo-edit">
             <form onSubmit={onSaveTodo} >

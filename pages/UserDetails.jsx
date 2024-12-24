@@ -16,7 +16,7 @@ export function UserDetails() {
 	const dispatch = useDispatch()
 
 	useEffect(() => {
-        console.log(user);
+		console.log(user)
 	}, [])
 
 	function onSaveUser(ev) {
@@ -60,7 +60,12 @@ export function UserDetails() {
 
 	const { fullname, prefs } = userToEdit
 
-	if (isLoading) return <div>Loading...</div>
+	if (isLoading)
+		return (
+			<div className='loading-container'>
+				<div className='loading'></div>
+			</div>
+		)
 	return (
 		<section className='user-details'>
 			<h2>Profile Preferences</h2>
@@ -95,17 +100,17 @@ export function UserDetails() {
 
 				<button>Save</button>
 			</form>
-            <h1>User Activity:</h1>
-            <ul>
-                {!user.activities.length && (
-                    <p>no activities to show...</p>
-                ) }
-                {user.activities.map((activity) => (
-                    <li key={activity.at}>
-                        <p>{utilService.timeAgo(activity.at)} | {activity.txt}</p>
-                    </li>
-                ))}
-            </ul>
+			<h1>User Activity:</h1>
+			<ul>
+				{!user.activities.length && <p>no activities to show...</p>}
+				{user.activities.map((activity) => (
+					<li key={activity.at}>
+						<p>
+							{utilService.timeAgo(activity.at)} | {activity.txt}
+						</p>
+					</li>
+				))}
+			</ul>
 		</section>
 	)
 }

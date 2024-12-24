@@ -1,7 +1,6 @@
 :root {
-  --user-color: #ffffff; /* Default text color */
-  --user-bg-color: #000000; /* Default background color */
-  --user-font-size: 16px; /* Default font size */
+  --user-color: #000000; /* Default text color */
+  --user-bg-color: #ffffff; /* Default background color */
 }
 
 * {

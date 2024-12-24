@@ -13,11 +13,12 @@ import { UserDetails } from "./pages/UserDetails.jsx"
 const Router = ReactRouterDOM.HashRouter
 const { Routes, Route } = ReactRouterDOM
 const { Provider, useSelector } = ReactRedux
+const { useEffect } = React
 
 function RootCmpWithPrefs() {
     const prefs = ReactRedux.useSelector((storeState) => storeState.layoutModule.prefs)
 
-    React.useEffect(() => {
+    useEffect(() => {
         // Update CSS variables dynamically
         document.documentElement.style.setProperty('--user-color', prefs.color)
         document.documentElement.style.setProperty('--user-bg-color', prefs.bgColor)
@@ -25,7 +26,7 @@ function RootCmpWithPrefs() {
 
     return (
         <Router>
-            <section className="app main-layout">
+            <section style={{color: prefs.color, backgroundColor: prefs.bgColor}} className="app main-layout">
                 <AppHeader />
                 <main>
                     <Routes>

@@ -13,6 +13,7 @@ export const todoService = {
 	getDefaultFilter,
 	getFilterFromSearchParams,
 	getImportanceStats,
+	getCompletionPercentage,
 };
 // For Debug (easy access from console):
 window.cs = todoService;
@@ -31,6 +32,24 @@ function query(filterBy = {}) {
 		if (filterBy.isDone !== '' && filterBy.isDone !== undefined) {
 			todos = todos.filter((todo) => todo.isDone === filterBy.isDone);
 		}
+
+		 // Apply sorting
+		 if (filterBy.sortBy) {
+            const { field, order } = filterBy.sortBy;
+            todos = todos.sort((a, b) => {
+                if (order === "asc") {
+                    return a[field] > b[field] ? 1 : -1;
+                } else {
+                    return a[field] < b[field] ? 1 : -1;
+                }
+            });
+        }
+
+        if (filterBy.pagination) {
+            const { currentPage, itemsPerPage } = filterBy.pagination;
+            const startIdx = (currentPage - 1) * itemsPerPage;
+            todos = todos.slice(startIdx, startIdx + itemsPerPage);
+        }
 
 		return todos;
 	});
@@ -68,7 +87,8 @@ function getEmptyTodo(txt = "", importance = 5) {
 }
 
 function getDefaultFilter() {
-	return { txt: "", importance: 0 , isDone: ''};
+	return { txt: "", importance: 0 , isDone: '', pagination: {currentPage: 1, itemsPerPage: 5}, sortBy: { field: "createdAt", order: "asc" }, // Default sorting by date in ascending order
+};
 }
 
 function getFilterFromSearchParams(searchParams) {
@@ -89,6 +109,18 @@ function getImportanceStats() {
 		}));
 		return data;
 	});
+}
+
+function getCompletionPercentage() {
+    return storageService.query(TODO_KEY).then((todos) => {
+        const totalTodos = todos.length;
+        if (totalTodos === 0) return 0; // Avoid division by zero
+
+        const completedTodos = todos.filter((todo) => todo.isDone).length;
+        const percentage = (completedTodos / totalTodos) * 100;
+
+        return percentage.toFixed(2); // Return percentage with 2 decimal points
+    });
 }
 
 function _createTodos() {

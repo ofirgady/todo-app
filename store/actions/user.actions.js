@@ -58,7 +58,6 @@ export function updateUserPrefs(user) {
 }
 
 export function updateUser(user) {
-    store.dispatch({ type: SET_USER, user: user })
     return userService.updateLoggedInUser(user)
     .then((updatedUser) => {
         store.dispatch({ type: SET_USER, user: updatedUser })

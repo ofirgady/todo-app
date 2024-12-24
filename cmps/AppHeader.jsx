@@ -4,6 +4,7 @@ import { LoginSignup } from './LoginSignup.jsx'
 import { showErrorMsg, showSuccessMsg } from '../services/event-bus.service.js'
 import { logout } from '../store/actions/user.actions.js'
 import { UPDATE_LAYOUT_PREFS } from "../store/reducers/layout.reducer.js"
+import { todoService } from '../services/todo.service.js'
 const { useState, useEffect } = React
 const { Link, NavLink, useNavigate } = ReactRouterDOM
 const { useSelector, useDispatch } = ReactRedux;
@@ -12,8 +13,18 @@ const { useSelector, useDispatch } = ReactRedux;
 
 export function AppHeader() {
     const navigate = useNavigate()
-    const user = useSelector(storeState => storeState.userModule.loggedInUser)
+    const user = useSelector((storeState) => storeState.userModule.loggedInUser)
     const dispatch = useDispatch()
+    const todos = useSelector((storeState) => storeState.todoModule.todos);
+    const [completionPercentage, setCompletionPercentage] = useState(0);
+
+    useEffect(() => {
+        if (todos) {
+            todoService.getCompletionPercentage().then((percentage) => {
+                setCompletionPercentage(percentage);
+            });
+        }
+    }, [todos]);
 
     useEffect(() => {
         if (user) {
@@ -43,6 +54,8 @@ export function AppHeader() {
                         <Link to={`/user/${user._id}`}>Hello {user.fullname}</Link>
                         <button onClick={onLogout}>Logout</button>
                         <p>Current Balance: {user.balance}</p>
+                        <p>Todo process bar: {completionPercentage}% is done already!</p>
+
                     </ section >
                 ) : (
                     <section>

@@ -4,18 +4,19 @@ import { SET_USER } from "../reducers/user.reducer.js";
 import { store } from "../store.js";
 
 export function loadTodos(filterBy) {
-    store.dispatch({ type: SET_IS_LOADING, isLoading: true })
+
+    store.dispatch({ type: SET_IS_LOADING, isLoading: true });
     return todoService.query(filterBy)
-        .then(todos => {
-            store.dispatch({ type: SET_TODOS, todos })
+        .then((todos) => {
+            store.dispatch({ type: SET_TODOS, todos });
         })
-        .catch(err => {
-            console.log('todo action -> Cannot load todos', err)
-            throw err
+        .catch((err) => {
+            console.error("todo action -> Cannot load todos", err);
+            throw err;
         })
         .finally(() => {
-            store.dispatch({ type: SET_IS_LOADING, isLoading: false })
-        })
+            store.dispatch({ type: SET_IS_LOADING, isLoading: false });
+        });
 }
 
 export function loadTodo(todoId) {
@@ -81,3 +82,4 @@ export function toggleTodo(todo) {
         throw err
     })
 }
+
