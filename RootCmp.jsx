@@ -9,6 +9,7 @@ import { AboutTeam } from "./cmps/AboutTeam.jsx"
 import { AboutVision } from "./cmps/AboutVision.jsx"
 import { Dashboard } from "./pages/Dashboard.jsx"
 import { UserDetails } from "./pages/UserDetails.jsx"
+import { AppFooter } from "./cmps/AppFooter.jsx"
 
 const Router = ReactRouterDOM.HashRouter
 const { Routes, Route } = ReactRouterDOM
@@ -43,6 +44,7 @@ function RootCmpWithPrefs() {
                         <Route path="/user/:userId" element={<UserDetails />} />
                     </Routes>
                 </main>
+                <AppFooter />
             </section>
         </Router>
     )

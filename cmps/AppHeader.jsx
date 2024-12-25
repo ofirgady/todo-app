@@ -5,6 +5,7 @@ import { showErrorMsg, showSuccessMsg } from '../services/event-bus.service.js'
 import { logout } from '../store/actions/user.actions.js'
 import { UPDATE_LAYOUT_PREFS } from "../store/reducers/layout.reducer.js"
 import { todoService } from '../services/todo.service.js'
+import { ProgressBar } from './ProgressBar.jsx'
 const { useState, useEffect } = React
 const { Link, NavLink, useNavigate } = ReactRouterDOM
 const { useSelector, useDispatch } = ReactRedux;
@@ -49,14 +50,12 @@ export function AppHeader() {
             <section className="header-container">
                 <h1>React Todo App</h1>
                 {user ? (
-                    < section >
-
-                        <Link to={`/user/${user._id}`}>Hello {user.fullname}</Link>
-                        <button onClick={onLogout}>Logout</button>
-                        <p>Current Balance: {user.balance}</p>
-                        <p>Todo process bar: {completionPercentage}% is done already!</p>
-
-                    </ section >
+                   <section>
+                   <Link to={`/user/${user._id}`}>Hello {user.fullname}</Link>
+                   <button onClick={onLogout}>Logout</button>
+                   <p>Current Balance: {user.balance}</p>
+                   <ProgressBar value={completionPercentage} />
+               </section>
                 ) : (
                     <section>
                         <LoginSignup />
