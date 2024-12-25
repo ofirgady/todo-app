@@ -4,8 +4,11 @@ export function TodoFilter({ filterBy, onSetFilterBy }) {
 	const [filterByToEdit, setFilterByToEdit] = useState({ ...filterBy });
 
 	useEffect(() => {
-		// Notify parent
-		onSetFilterBy(filterByToEdit);
+		const timeout = setTimeout(() => {
+			onSetFilterBy(filterByToEdit);
+		}, 400);
+
+		return () => clearTimeout(timeout);
 	}, [filterByToEdit]);
 
 	function handleChange({ target }) {

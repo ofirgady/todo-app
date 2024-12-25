@@ -21,7 +21,7 @@ export function AppHeader() {
     useEffect(() => {
         if (todos) {
             todoService.getCompletionPercentage().then((percentage) => {
-                setCompletionPercentage(percentage);
+                setCompletionPercentage(+percentage);
             });
         }
     }, [todos]);

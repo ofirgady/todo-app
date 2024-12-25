@@ -12,13 +12,19 @@ const { Link, useSearchParams } = ReactRouterDOM
 const { useSelector, useDispatch } = ReactRedux
 export function TodoIndex() {
 	const todos = useSelector((storeState) => storeState.todoModule.todos)
+	const totalTodos = useSelector(
+		(storeState) => storeState.todoModule.totalTodos
+	)
 	const user = useSelector((storeState) => storeState.userModule.loggedInUser)
 	const isLoading = useSelector((storeState) => storeState.todoModule.isLoading)
 	const filterBy = useSelector((storeState) => storeState.todoModule.filterBy)
+	const currentPage = filterBy.pagination.currentPage
+	const itemsPerPage = filterBy.pagination.itemsPerPage
+
+	const maxPages = Math.ceil(totalTodos / itemsPerPage)
 
 	const [todoToRemove, setTodoToRemove] = useState(null)
-	const dialogRef = React.useRef(null) // Ref for the <dialog> element
-
+	const dialogRef = React.useRef(null)
 	const dispatch = useDispatch()
 
 	useEffect(() => {
@@ -43,6 +49,7 @@ export function TodoIndex() {
 
 	// Update the current page
 	function onPageChange(newPage) {
+		if (newPage < 1 || newPage > maxPages) return
 		const updatedFilterBy = {
 			...filterBy,
 			pagination: { ...filterBy.pagination, currentPage: newPage },
@@ -119,8 +126,7 @@ export function TodoIndex() {
 				<Link
 					to='/todo/edit'
 					className='btn'>
-					{" "}
-					Add Todo{" "}
+					Add Todo
 				</Link>
 			</div>
 			<h2>Todos List</h2>
@@ -147,6 +153,7 @@ export function TodoIndex() {
 							Previous
 						</button>
 						<button
+							disabled={currentPage === maxPages || totalTodos === 0}
 							onClick={() => onPageChange(filterBy.pagination.currentPage + 1)}>
 							Next
 						</button>
@@ -168,9 +175,9 @@ export function TodoIndex() {
 					</div>
 				</Fragment>
 			) : (
-						<div className='loading-container'>
-							<div className='loading'></div>
-						</div>
+				<div className='loading-container'>
+					<div className='loading'></div>
+				</div>
 			)}
 
 			{/* Dialog Element */}
